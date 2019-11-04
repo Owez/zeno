@@ -1,6 +1,6 @@
 # Zeno
 
-Zeno is a new code editor wiht ease-of-use in mind.
+Zeno is a new code editor with ease-of-use in mind.
 
 ## Key features
 
