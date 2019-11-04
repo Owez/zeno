@@ -1,0 +1,35 @@
+image: rust:latest
+
+stages:
+  - test
+  - build
+
+rust-latest:
+  stage: test
+  script:
+    - cd zeno
+    - cargo build --verbose
+    - cargo test --verbose
+
+rust-nightly:
+  stage: test
+  image: rustlang/rust:nightly
+  script:
+    - cd zeno
+    - cargo build --verbose
+    - cargo test --verbose
+  allow_failure: true
+
+latest-artifact:
+  stage: build
+  script:
+    - cd zeno
+    - cargo build --release
+    - mkdir public
+    - mv target/release/zeno public/
+  artifacts:
+    expire_in: 1 yrs
+    paths:
+      - public/zeno
+  only:
+    - master
