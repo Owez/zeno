@@ -1,11 +1,13 @@
 use cursive::traits::*;
-use cursive::views::{Button, Dialog, EditView, LinearLayout, SelectView, TextView};
+use cursive::views::{
+    BoxView, Button, Dialog, EditView, LinearLayout, SelectView, TextArea, TextView,
+};
 use cursive::Cursive;
 
 /// Storage structure for holding metadata for a given profile in-memory.
-struct Profile<'a> {
+struct Profile {
     /// Name of the profile
-    name: &'a str,
+    name: String,
 }
 
 /// Start of zeno's ui, enacting all basic functionality.
@@ -24,12 +26,12 @@ fn zeno_launch(s: &mut Cursive) {
 /// flexible options).
 fn profile_select(s: &mut Cursive) {
     let profile_list = SelectView::<String>::new()
-        .on_submit(on_profile_add)
+        .on_submit(editor_screen)
         .with_id("p_list")
         .fixed_size((32, 8));
     let admin_buttons = LinearLayout::vertical()
         .child(Button::new("Add new", add_profile))
-        .child(Button::new("Remove", remove_profile));
+        .child(Button::new("Remove", remove_conf));
 
     s.pop_layer();
     s.add_layer(
@@ -42,8 +44,20 @@ fn profile_select(s: &mut Cursive) {
     )
 }
 
+fn remove_conf(s: &mut Cursive) {
+    s.add_layer(
+        Dialog::text("Are you sure you want to delete the selected profile?")
+            .button("Yes", remove_profile)
+            .button("No", |s| {
+                s.pop_layer();
+            }),
+    )
+}
+
 /// Allows a user to delete/remove a profile.
 fn remove_profile(s: &mut Cursive) {
+    s.pop_layer();
+
     let mut got_select = s.find_id::<SelectView<String>>("p_list").unwrap();
 
     match got_select.selected_id() {
@@ -84,16 +98,15 @@ fn add_profile(s: &mut Cursive) {
     )
 }
 
-/// When a profile is added. This should add a new profile to the database and
-/// show a simple welcome popup.
-fn on_profile_add(s: &mut Cursive, p_name: &str) {
-    let new_profile = Profile { name: p_name };
+/// Shows the main editor screen.
+fn editor_screen(s: &mut Cursive, p_name: &str) {
     s.pop_layer();
-    s.add_layer(
-        Dialog::text(format!("Welcome, '{}'!", new_profile.name))
-            .title("Profile selected")
-            .button("Quit", |s| s.quit()),
-    );
+
+    // let selected_profile = Profile {
+    //     name: String::from(p_name),
+    // };
+
+    s.add_layer(BoxView::with_full_screen(TextArea::new()));
 }
 
 fn main() {

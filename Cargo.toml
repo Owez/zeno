@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 
-[dependencies.cursive] # TUI Library
-version = "0.13"
-default_features = false
-features = ["termion-backend"] # Default is insecure
+[dependencies.cursive] # Default ncurses backend is insecure
+git = "https://github.com/gyscos/cursive"
+default-features = false
+features = ["crossterm-backend"]
