@@ -72,10 +72,14 @@ fn remove_profile(s: &mut Cursive) {
 fn add_profile(s: &mut Cursive) {
     /// Adds a name to the profile list ([SelectView])
     fn add_to_list(s: &mut Cursive, p_name: &str) {
-        s.call_on_id("p_list", |view: &mut SelectView<String>| {
-            view.add_item_str(p_name);
-        });
-        s.pop_layer();
+        if p_name == "" {
+            s.add_layer(Dialog::info("Cannot add a new profile with no name!"));
+        } else {
+            s.call_on_id("p_list", |view: &mut SelectView<String>| {
+                view.add_item_str(p_name);
+            });
+            s.pop_layer();
+        }
     }
 
     s.add_layer(
@@ -106,7 +110,46 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
     //     name: String::from(p_name),
     // };
 
-    s.add_layer(BoxView::with_full_screen(TextArea::new()));
+    let text_enclosure = LinearLayout::horizontal();
+    let default_text_panel = text_enclosure.child(BoxView::with_full_screen(TextArea::new()));
+    let save_info = TextArea::new()
+        .content("Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]");
+
+    s.add_fullscreen_layer(
+        LinearLayout::vertical()
+            .child(default_text_panel)
+            .child(save_info),
+    );
+}
+
+/// Dialog to find what user should save a given file as and then will attempt to save
+fn save_as(s: &mut Cursive) {
+    /// Dumps all inside editor to specified location
+    fn save_file(s: &mut Cursive, file_name: &str) {
+        s.add_layer(Dialog::info(format!(
+            "Coming soon! Should save to '{}'..",
+            file_name
+        )));
+    }
+
+    s.add_layer(
+        Dialog::around(
+            EditView::new()
+                .on_submit(save_file)
+                .with_id("file_name")
+                .fixed_width(32),
+        )
+        .title("Save file as")
+        .button("Save", |s| {
+            let file_name = s
+                .call_on_id("file_name", |view: &mut EditView| view.get_content())
+                .unwrap(); // Get content from EditView
+            save_file(s, &file_name);
+        })
+        .button("Cancel", |s| {
+            s.pop_layer();
+        }),
+    )
 }
 
 fn main() {
