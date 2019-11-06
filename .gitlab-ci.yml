@@ -7,7 +7,6 @@ stages:
 rust-latest:
   stage: test
   script:
-    - cd zeno
     - cargo build --verbose
     - cargo test --verbose
 
@@ -23,7 +22,6 @@ rust-nightly:
 latest-artifact:
   stage: build
   script:
-    - cd zeno
     - cargo build --release
     - mkdir public
     - mv target/release/zeno public/
