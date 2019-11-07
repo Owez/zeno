@@ -107,12 +107,23 @@ fn add_profile(s: &mut Cursive) {
 fn editor_screen(s: &mut Cursive, p_name: &str) {
     s.pop_layer();
 
-    // let selected_profile = Profile {
-    //     name: String::from(p_name),
-    // };
+    let _selected_profile = Profile {
+        name: String::from(p_name),
+    };
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
-        OnEventView::new(TextArea::new()).on_pre_event(event::Event::CtrlChar('s'), save_as),
+        OnEventView::new(TextArea::new().with_id("tb1")).on_pre_event(
+            event::Event::CtrlChar('s'),
+            |s| {
+                // TODO make cleaner
+                let tb_content = s
+                    .call_on_id("tb1", |view: &mut TextArea| {
+                        String::from(view.get_content())
+                    })
+                    .unwrap(); // Get content from TextArea
+                save_as(s, &tb_content);
+            },
+        ),
     ));
     let save_info = TextArea::new()
         .content("Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]");
@@ -125,15 +136,14 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
 }
 
 /// Dialog to find what user should save a given file as and then will attempt to save
-fn save_as(s: &mut Cursive) {
+fn save_as(s: &mut Cursive, _str_buf: &str) {
     /// Dumps all inside editor to specified location
     fn save_file(s: &mut Cursive, file_name: &str) {
         s.add_layer(Dialog::info(format!(
-            "Coming soon! Should save to '{}'..",
+            "Coming soon! Should save to '{}'!",
             file_name
         )));
     }
-
     s.add_layer(
         Dialog::around(
             EditView::new()
@@ -151,5 +161,5 @@ fn save_as(s: &mut Cursive) {
         .button("Cancel", |s| {
             s.pop_layer();
         }),
-    )
+    );
 }
