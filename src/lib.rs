@@ -1,8 +1,9 @@
-use cursive::traits::*;
 use cursive::views::{
-    BoxView, Button, Dialog, EditView, LinearLayout, SelectView, TextArea, TextView, ScrollView
+    BoxView, Button, Dialog, EditView, LinearLayout, OnEventView, ScrollView, SelectView, TextArea,
+    TextView,
 };
 use cursive::Cursive;
+use cursive::{event, traits::*};
 
 /// Storage structure for holding metadata for a given profile in-memory.
 pub struct Profile {
@@ -110,7 +111,9 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
     //     name: String::from(p_name),
     // };
 
-    let text_enclosure = ScrollView::new(BoxView::with_full_screen(TextArea::new()));
+    let text_enclosure = ScrollView::new(BoxView::with_full_screen(
+        OnEventView::new(TextArea::new()).on_pre_event(event::Event::CtrlChar('s'), save_as),
+    ));
     let save_info = TextArea::new()
         .content("Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]");
 
