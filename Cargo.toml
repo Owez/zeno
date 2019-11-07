@@ -5,4 +5,8 @@ authors = ["Owez <owez@scalist.net>"]
 edition = "2018"
 
 [dependencies]
-tui = "0.6.2" # Terminal interface
+
+[dependencies.cursive] # Default ncurses backend is insecure
+git = "https://github.com/gyscos/cursive"
+default-features = false
+features = ["crossterm-backend"]
