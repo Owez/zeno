@@ -6,6 +6,7 @@ use cursive::Cursive;
 use cursive::{event, traits::*};
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::PathBuf;
 
 /// Storage structure for holding metadata for a given profile in-memory.
 pub struct Profile {
@@ -13,8 +14,10 @@ pub struct Profile {
     pub name: String,
 }
 
-/// Start of zeno's ui, enacting all basic functionality.
-pub fn zeno_launch(s: &mut Cursive) {
+/// Start of zeno's ui, enacting all basic functionality. You may pass in a file
+/// to open automatically
+pub fn zeno_launch(s: &mut Cursive, _open_file: Option<PathBuf>) {
+    // TODO use open_file
     s.add_layer(
         Dialog::around(TextView::new(
             "This is a work-in-progress program and is not guaranteed to work.",
