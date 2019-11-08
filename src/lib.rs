@@ -14,9 +14,18 @@ pub struct Profile {
     pub name: String,
 }
 
+/// A structure for configuring the text editor before profile selecting.
+/// 
+/// This is useful for using in combination with a CLI to choose what to open
+/// for example.
+pub struct StartMeta {
+    /// The path to automatically open after profile has been properly chosen.
+    pub open_path: Option<PathBuf>
+}
+
 /// Start of zeno's ui, enacting all basic functionality. You may pass in a file
 /// to open automatically
-pub fn zeno_launch(s: &mut Cursive, _open_file: Option<PathBuf>) {
+pub fn zeno_launch(s: &mut Cursive, meta: StartMeta) {
     // TODO use open_file
     s.add_layer(
         Dialog::around(TextView::new(
