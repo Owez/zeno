@@ -12,6 +12,9 @@ use std::path::PathBuf;
 pub struct Profile {
     /// Name of the profile
     pub name: String,
+
+    /// Name of the `theme.toml`. Do not include the path or `.toml` file extension
+    pub theme: String,
 }
 
 /// Start of zeno's ui, enacting all basic functionality. You may pass in a file
@@ -114,6 +117,7 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
 
     let _selected_profile = Profile {
         name: String::from(p_name),
+        theme: String::from("dark"), // TODO custom themes
     };
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(

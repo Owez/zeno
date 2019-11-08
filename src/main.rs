@@ -20,7 +20,7 @@ fn main() {
 
     let mut siv = Cursive::default();
 
-    siv.load_theme_file("themes/dark.toml").unwrap();
+    siv.load_theme_file("themes/dark.toml").unwrap(); // Dark default theme
 
     siv.add_global_callback('e', |s| s.quit());
     zeno_launch(&mut siv, opt.file);
