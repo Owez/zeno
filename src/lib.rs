@@ -120,8 +120,9 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
         OnEventView::new(TextArea::new().with_id("tb"))
             .on_pre_event(event::Event::CtrlChar('s'), save_as),
     ));
-    let save_info = TextArea::new()
-        .content("Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]");
+    let save_info = TextView::new(
+        "Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]",
+    );
 
     s.add_fullscreen_layer(
         LinearLayout::vertical()
