@@ -1,19 +1,22 @@
 use cursive::views::{
     BoxView, Button, Dialog, EditView, LinearLayout, OnEventView, ScrollView, SelectView, TextArea,
+    TextView,
 };
 use cursive::Cursive;
 use cursive::{event, traits::*};
+use std::cell::RefCell;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
+use std::rc::Rc;
 
 /// Storage structure for holding metadata for a given profile in-memory.
 pub struct Profile {
     /// Name of the profile
     pub name: String,
 
-    /// Name of the `theme.toml`. Do not include the path or `.toml` file extension
-    pub theme: String,
+    /// Path to the theme file. This should be a valid theme toml or it will throw an error.
+    pub theme: PathBuf,
 }
 
 /// A structure for configuring the text editor before profile selecting.
@@ -26,7 +29,10 @@ pub struct StartMeta {
 }
 
 /// Start of zeno's ui, enacting all basic functionality. You may pass in a file
-/// to open automatically
+/// to open automatically.
+///
+/// Internally, this is a modular boilerplate function for wrapping whatever
+/// happens to start first.
 pub fn zeno_launch(s: &mut Cursive, meta: StartMeta) {
     profile_select(s, meta);
 }
@@ -140,23 +146,46 @@ fn smart_text_area(meta: &StartMeta) -> TextArea {
 fn editor_screen(s: &mut Cursive, p_name: &str, meta: &StartMeta) {
     s.pop_layer();
 
-    let _selected_profile = Profile {
+    let selected_profile = Rc::new(RefCell::new(Profile {
         name: String::from(p_name),
-        theme: String::from("dark"), // TODO custom themes
-    };
+        theme: PathBuf::new(), // TODO load theme from db
+    }));
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
         OnEventView::new(smart_text_area(meta).with_id("tb"))
-            .on_pre_event(event::Event::CtrlChar('s'), save_as),
+            .on_pre_event(event::Event::CtrlChar('s'), save_as)
+            .on_pre_event(event::Event::CtrlChar('l'), move |s| {
+                profile_options(s, Rc::clone(&selected_profile));
+            }),
     ));
     let save_info = TextView::new(
-        "Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down]",
+        "Save: ctrl+s, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down], Profile settings: ctrl+l",
     );
 
     s.add_fullscreen_layer(
         LinearLayout::vertical()
             .child(text_enclosure)
             .child(save_info),
+    );
+}
+
+/// Allows users to edit their profile options.
+fn profile_options(s: &mut Cursive, profile: Rc<RefCell<Profile>>) {
+    let profile_theme_options = move |s: &mut Cursive| {
+        // profile.borrow_mut().name = String::from("Woo"); // TODO do this with theme
+        s.add_layer(Dialog::info(format!("It works, {}", profile.borrow().name)));
+    };
+
+    let options = SelectView::new()
+        .item("Themes", profile_theme_options)
+        .on_submit(|s, call| call(s));
+
+    s.add_layer(
+        Dialog::around(options)
+            .button("Close", |s| {
+                s.pop_layer();
+            })
+            .title("Profile settings"),
     );
 }
 
