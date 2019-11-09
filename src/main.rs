@@ -17,12 +17,13 @@ struct Opt {
 
 fn main() {
     let opt = Opt::parse();
+    let meta = StartMeta { open_path: opt.file };
 
     let mut siv = Cursive::default();
 
     siv.load_theme_file("themes/dark.toml").unwrap(); // Dark default theme
 
     siv.add_global_callback('e', |s| s.quit());
-    zeno_launch(&mut siv, opt.file);
+    zeno_launch(&mut siv, meta);
     siv.run();
 }
