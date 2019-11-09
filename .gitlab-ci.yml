@@ -24,9 +24,10 @@ latest-artifact:
     - cargo build --release
     - mkdir public
     - mv target/release/zeno public/
+    - mv data/ public/
   artifacts:
     expire_in: 1 yrs
     paths:
-      - public/zeno
+      - public/
   only:
     - master

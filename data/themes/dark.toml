@@ -4,10 +4,10 @@ borders = "outset"
 [colors]
 shadow = "#1a1a1a"
 background = "black"
-primary   = ["black"]
+primary = ["black"]
 secondary = "black"
-tertiary  = "black"
-title_primary   = "#3560e0"
+tertiary = "black"
+title_primary = "#3560e0"
 title_secondary = "#ffff55"
-highlight          = "#3560e0"
+highlight = "#3560e0"
 highlight_inactive = "#7a93c9"
