@@ -1,6 +1,5 @@
 use cursive::views::{
     BoxView, Button, Dialog, EditView, LinearLayout, OnEventView, ScrollView, SelectView, TextArea,
-    TextView,
 };
 use cursive::Cursive;
 use cursive::{event, traits::*};
@@ -15,33 +14,27 @@ pub struct Profile {
 }
 
 /// A structure for configuring the text editor before profile selecting.
-/// 
+///
 /// This is useful for using in combination with a CLI to choose what to open
 /// for example.
 pub struct StartMeta {
     /// The path to automatically open after profile has been properly chosen.
-    pub open_path: Option<PathBuf>
+    pub open_path: Option<PathBuf>,
 }
 
 /// Start of zeno's ui, enacting all basic functionality. You may pass in a file
 /// to open automatically
 pub fn zeno_launch(s: &mut Cursive, meta: StartMeta) {
-    // TODO use open_file
-    s.add_layer(
-        Dialog::around(TextView::new(
-            "This is a work-in-progress program and is not guaranteed to work.",
-        ))
-        .title("Welcome to Zeno")
-        .button("Continue", profile_select)
-        .button("Quit", |s| s.quit()),
-    );
+    profile_select(s, meta);
 }
 
 /// Profile selector for multi-user/multi-purpose editing (allowing for more
 /// flexible options).
-fn profile_select(s: &mut Cursive) {
+fn profile_select(s: &mut Cursive, meta: StartMeta) {
     let profile_list = SelectView::<String>::new()
-        .on_submit(editor_screen)
+        .on_submit(move |s, selected_item| {
+            editor_screen(s, selected_item, &meta);
+        })
         .with_id("p_list")
         .fixed_size((32, 8));
     let admin_buttons = LinearLayout::vertical()
@@ -117,8 +110,31 @@ fn add_profile(s: &mut Cursive) {
     )
 }
 
+/// A "smart" text area that initializes depending on [StartMeta.open_path] (will
+/// return a new, blank [TextArea] if no file to open or a pre-filled one if a
+/// file was given).
+fn smart_text_area(meta: &StartMeta) -> TextArea {
+    /// Gets content from a specified file path ([PathBuf]) and returns a string
+    /// or panics in the process.
+    fn get_path_content(path: &PathBuf) -> String {
+        let mut got_file = File::open(path).unwrap();
+        let mut content = String::new();
+
+        got_file.read_to_string(&mut content).unwrap();
+
+        content
+    }
+
+    let text_area = TextArea::new();
+
+    match &meta.open_path {
+        None => text_area,
+        Some(p) => text_area.content(get_path_content(p)),
+    }
+}
+
 /// Shows the main editor screen.
-fn editor_screen(s: &mut Cursive, p_name: &str) {
+fn editor_screen(s: &mut Cursive, p_name: &str, meta: &StartMeta) {
     s.pop_layer();
 
     let _selected_profile = Profile {
@@ -126,7 +142,7 @@ fn editor_screen(s: &mut Cursive, p_name: &str) {
     };
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
-        OnEventView::new(TextArea::new().with_id("tb"))
+        OnEventView::new(smart_text_area(meta).with_id("tb"))
             .on_pre_event(event::Event::CtrlChar('s'), save_as),
     ));
     let save_info = TextArea::new()
