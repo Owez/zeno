@@ -21,7 +21,7 @@ pub fn open_path_str(s: &mut Cursive) {
                             .unwrap(),
                     )
                     .unwrap(),
-                );
+                ); // TODO fix
 
                 if !file_path.exists() {
                     s.add_layer(Dialog::info(format!("{:?} does not exist", file_path)));
