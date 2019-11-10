@@ -8,6 +8,3 @@ edition = "2018"
 git = "https://github.com/gyscos/cursive"
 default-features = false
 features = ["crossterm-backend", "toml"]
-
-[dependencies.clap] # CLI parsing
-git = "https://github.com/clap-rs/clap"
