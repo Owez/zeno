@@ -20,7 +20,13 @@ pub fn open_path_str(s: &mut Cursive) {
                     .call_on_id("open_file_name", |view: &mut EditView| view.get_content())
                     .unwrap(); // Get path from EditView
 
-                let contents = get_content_str(s, &got_path); // Use [got_path] to get file contents
+                let contents = match get_content_str(&got_path) {
+                    Ok(x) => x,
+                    Err(e) => {
+                        s.add_layer(Dialog::info(e));
+                        return ();
+                    },
+                }; // Use [got_path] to get file contents or exit if fail
 
                 s.call_on_id("tb", |view: &mut TextArea| view.set_content(contents))
                     .unwrap(); // Set textarea content
@@ -33,18 +39,16 @@ pub fn open_path_str(s: &mut Cursive) {
 
 /// Gets content from a given &[str] and return file's contents or nicely error
 /// when trying.
-fn get_content_str(s: &mut Cursive, file_path: &str) -> String {
+fn get_content_str(file_path: &str) -> Result<String, String> {
     let pb_p = PathBuf::from(file_path);
 
     if !pb_p.exists() {
-        s.add_layer(Dialog::info(format!("{:?} does not exist", file_path)));
-        s.pop_layer();
+        Err(format!("{:?} does not exist", file_path))
     } else if pb_p.is_dir() {
-        s.add_layer(Dialog::info(format!("{:?} is a directory", file_path)));
-        s.pop_layer();
+        Err(format!("{:?} is a directory", file_path))
+    } else {
+        Ok(get_path_content(&pb_p))
     }
-
-    get_path_content(&pb_p)
 }
 
 /// Gets content from a specified file path ([PathBuf]) and returns a string
