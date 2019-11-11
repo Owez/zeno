@@ -17,6 +17,12 @@ pub struct StartMeta {
     pub open_path: Option<PathBuf>,
 }
 
+/// Shows correct usage of zeno.
+fn show_usage_info() {
+    println!("Usage: `zeno [file]`");
+    std::process::exit(0);
+}
+
 /// Retrives arguments from the command-line on startup. If these arguments are
 /// incorrect, the function will display what went wrong and return a error exit
 /// code.
@@ -26,17 +32,21 @@ pub fn get_cli_args() -> StartMeta {
     match open_path {
         None => StartMeta { open_path: None },
         Some(p) => {
+            if p == "--help" || p == "-h" {
+                show_usage_info()
+            }
+
             let got_path = PathBuf::from(&p);
 
             if !got_path.exists() {
                 println!(
-                    "{:?} does not exist or zeno doesn't have the correct permissions to access it!",
+                    "{:?} does not exist or zeno doesn't have the correct permissions to access it!\n",
                     got_path
                 );
-                std::process::exit(1);
+                show_usage_info()
             } else if got_path.is_dir() {
-                println!("{:?} is a directory, not a file!", got_path);
-                std::process::exit(1);
+                println!("{:?} is a directory, not a file!\n", got_path);
+                show_usage_info()
             }
 
             StartMeta {
