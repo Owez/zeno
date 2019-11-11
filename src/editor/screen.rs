@@ -31,7 +31,7 @@ pub fn editor_screen(s: &mut Cursive, p_name: &str, meta: &StartMeta) {
             }),
     ));
     let save_info = TextView::new(
-        "Save: ctrl+s, Open: ctrl+o, Exit: ctrl+c, HSplit: ctrl+[left/right], VSplit: ctrl+[up/down], Profile settings: ctrl+l",
+        "Save: ctrl+s, Open: ctrl+o, Exit: ctrl+c, Profile settings: ctrl+l",
     );
 
     s.add_fullscreen_layer(
