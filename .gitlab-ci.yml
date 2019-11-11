@@ -25,6 +25,7 @@ latest-artifact:
     - mkdir public
     - mv target/release/zeno public/
     - mv data/ public/
+    - strip public/zeno
   artifacts:
     expire_in: 1 yrs
     paths:
