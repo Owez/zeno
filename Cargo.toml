@@ -1,5 +1,9 @@
 [package]
 name = "zeno"
+desciption = "A lightweight code editor."
+readme = "README.md"
+license = "GPL-3.0"
+repository = "https://gitlab/zeno-src/zeno"
 version = "0.0.0"
 authors = ["Owez <owez@scalist.net>"]
 edition = "2018"
