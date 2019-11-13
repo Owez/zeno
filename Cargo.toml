@@ -1,6 +1,6 @@
 [package]
 name = "zeno"
-desciption = "A lightweight code editor."
+description = "A lightweight code editor."
 readme = "README.md"
 license = "GPL-3.0"
 repository = "https://gitlab/zeno-src/zeno"
