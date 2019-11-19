@@ -1,0 +1,10 @@
+[colors]
+background = "white"
+primary = "white"
+secondary = "white"
+tertiary = "white"
+title_primary = "white"
+title_secondary = "white"
+highlight = "white"
+highlight_inactive = "#e0e0e0"
+view = "black"

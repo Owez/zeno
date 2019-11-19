@@ -1,0 +1,12 @@
+shadow = false
+borders = "outset"
+
+[colors]
+background = "black"
+primary = ["#000000"]
+secondary = "black"
+tertiary = "#000000"
+title_primary = "black"
+title_secondary = "#000000"
+highlight = "#000000"
+highlight_inactive = "#7a7a7a"
