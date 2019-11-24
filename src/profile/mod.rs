@@ -7,9 +7,11 @@
 pub mod options;
 pub mod select;
 
+use serde::{Serialize, Deserialize};
 use std::path::PathBuf;
 
 /// Storage structure for holding metadata for a given profile in-memory.
+#[derive(Hash, Eq, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Profile {
     /// Name of the profile
     pub name: String,

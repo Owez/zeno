@@ -12,3 +12,10 @@ edition = "2018"
 git = "https://github.com/gyscos/cursive"
 default-features = false
 features = ["crossterm-backend", "toml"]
+
+[dependencies.tinydb] # Database for profiles
+version = "0.0.3"
+
+[dependencies.serde] # Required for tinydb
+version = "1.0"
+features = ["derive"]
