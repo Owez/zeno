@@ -6,6 +6,8 @@ pub mod editor;
 pub mod profile;
 pub mod theme;
 
+mod utils;
+
 use profile::select::profile_select;
 
 /// A structure for configuring the text editor before profile selecting.

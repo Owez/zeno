@@ -6,7 +6,7 @@
 use crate::editor::open::{get_path_content, open_path_str};
 use crate::editor::save::save_as;
 use crate::profile::{options::profile_options, Profile};
-use crate::StartMeta;
+use crate::{StartMeta, utils};
 use cursive::views::{BoxView, LinearLayout, OnEventView, ScrollView, TextArea, TextView};
 use cursive::{event, traits::*, Cursive};
 use std::cell::RefCell;
@@ -22,7 +22,7 @@ pub fn editor_screen(
 ) {
     s.pop_layer();
 
-    let selected_profile = find_profile(p_db, p_name);
+    let selected_profile = utils::find_profile(p_db, p_name);
     let selected_profile_ref = Rc::new(RefCell::new(selected_profile));
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
@@ -41,15 +41,6 @@ pub fn editor_screen(
             .child(text_enclosure)
             .child(save_info),
     );
-}
-
-/// Searches a database for a profile given it's name. If it exists, the function
-/// will return it's details. If not, a panic will be raised.
-fn find_profile(p_db: Rc<RefCell<Database<Profile>>>, search_name: &str) -> Profile {
-    p_db.borrow()
-        .query_item(|q: &Profile| &q.name, String::from(search_name))
-        .unwrap()
-        .clone()
 }
 
 /// A "smart" text area that initializes depending on [StartMeta.open_path] (will

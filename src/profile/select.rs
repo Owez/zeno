@@ -7,7 +7,7 @@
 
 use crate::editor::screen::editor_screen;
 use crate::profile::Profile;
-use crate::StartMeta;
+use crate::{utils, StartMeta};
 use cursive::views::{Button, Dialog, EditView, LinearLayout, SelectView};
 use cursive::{traits::*, Cursive};
 use std::cell::RefCell;
@@ -25,18 +25,26 @@ pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
         false => Database::new(String::from("profile"), Some(db_path), true),
     })); // profile database
 
-    let p_db_closure = Rc::clone(&p_db); // Scoping issues with p_db and moving closures.
-    let p_db_closure_2 = Rc::clone(&p_db); // Scoping issues with p_db and moving closures again.
-    let p_db_closure_3 = Rc::clone(&p_db); // Scoping issues with p_db and moving closures again.
+    let mut profile_list = {
+        let p_db_closure = Rc::clone(&p_db);
 
-    let mut profile_list = SelectView::<String>::new().on_submit(move |s, selected_item| {
-        editor_screen(s, Rc::clone(&p_db_closure), selected_item, &meta);
-    });
+        SelectView::<String>::new().on_submit(move |s, selected_item| {
+            editor_screen(s, Rc::clone(&p_db_closure), selected_item, &meta);
+        })
+    };
+
     let admin_buttons = LinearLayout::vertical()
-        .child(Button::new("Add new", move |s| {
-            add_profile(s, Rc::clone(&p_db_closure_2));
+        .child(Button::new("Add new", {
+            let p_db_closure = Rc::clone(&p_db);
+            move |s| {
+                add_profile(s, Rc::clone(&p_db_closure));
+            }
         }))
-        .child(Button::new("Remove", move |s| { remove_conf(s, Rc::clone(&p_db_closure_3)) }));
+        .child(Button::new("Remove", {
+            let p_db_closure = Rc::clone(&p_db);
+
+            move |s| remove_conf(s, Rc::clone(&p_db_closure))
+        }));
 
     for profile in p_db.borrow().read_db().iter() {
         profile_list.add_item_str(profile.name.clone());
@@ -60,7 +68,9 @@ pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
 fn remove_conf(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
     s.add_layer(
         Dialog::text("Are you sure you want to delete the selected profile?")
-            .button("Yes", move |s| {remove_profile(s, Rc::clone(&p_db));})
+            .button("Yes", move |s| {
+                remove_profile(s, Rc::clone(&p_db));
+            })
             .button("No", |s| {
                 s.pop_layer();
             }),
@@ -68,7 +78,7 @@ fn remove_conf(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
 }
 
 /// Allows a user to delete/remove a profile.
-fn remove_profile(s: &mut Cursive, _p_db: Rc<RefCell<Database<Profile>>>) {
+fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
     s.pop_layer();
 
     let mut got_select = s.find_id::<SelectView<String>>("p_list").unwrap();
@@ -76,6 +86,15 @@ fn remove_profile(s: &mut Cursive, _p_db: Rc<RefCell<Database<Profile>>>) {
     match got_select.selected_id() {
         None => s.add_layer(Dialog::info("No profiles to remove!")),
         Some(profile) => {
+            // remove from db
+            let mut p_db_mut = p_db.borrow_mut();
+            let (_, to_find) = got_select.get_item(profile).unwrap();
+
+            let found_profile = utils::find_profile(Rc::clone(&p_db), to_find); // Broken
+            p_db_mut.remove_item(&found_profile).unwrap();
+            p_db_mut.dump_db().unwrap();
+
+            // remove from list
             got_select.remove_item(profile);
         }
     }
