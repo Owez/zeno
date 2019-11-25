@@ -17,28 +17,31 @@ use tinydb::Database;
 /// Profile selector for multi-user/multi-purpose editing (allowing for more
 /// flexible options).
 pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
-    let db_path = PathBuf::from("data/db/profile.db");
+    let db_path = PathBuf::from("data/db/profile.db"); // path to open database
 
     let p_db = Rc::new(RefCell::new(match db_path.exists() {
         true => Database::from(db_path).unwrap(),
         false => Database::new(String::from("profile"), Some(db_path), true),
-    }));
+    })); // profile database
 
-    let profile_list = SelectView::<String>::new()
-        .on_submit(move |s, selected_item| {
-            editor_screen(s, Rc::clone(&p_db), selected_item, &meta);
-        })
-        .with_id("p_list")
-        .fixed_size((32, 8));
+    let p_db_closure = Rc::clone(&p_db); // Scoping issues with p_db and moving closures.
+
+    let mut profile_list = SelectView::<String>::new().on_submit(move |s, selected_item| {
+        editor_screen(s, Rc::clone(&p_db_closure), selected_item, &meta);
+    });
     let admin_buttons = LinearLayout::vertical()
         .child(Button::new("Add new", add_profile))
         .child(Button::new("Remove", remove_conf));
+
+    for profile in p_db.borrow().read_db().iter() {
+        profile_list.add_item_str(profile.name.clone());
+    } // add profiles to list
 
     s.pop_layer();
     s.add_layer(
         Dialog::around(
             LinearLayout::horizontal()
-                .child(profile_list)
+                .child(profile_list.with_id("p_list").fixed_size((32, 8)))
                 .child(admin_buttons),
         )
         .title("Profile selector"),
