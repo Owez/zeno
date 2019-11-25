@@ -10,9 +10,8 @@ use crate::StartMeta;
 use cursive::views::{BoxView, LinearLayout, OnEventView, ScrollView, TextArea, TextView};
 use cursive::{event, traits::*, Cursive};
 use std::cell::RefCell;
-use std::path::PathBuf;
 use std::rc::Rc;
-use tinydb::{error, Database};
+use tinydb::Database;
 
 /// Shows the main editor screen.
 pub fn editor_screen(
@@ -23,7 +22,7 @@ pub fn editor_screen(
 ) {
     s.pop_layer();
 
-    let selected_profile = find_or_make_profile(p_db, p_name).unwrap();
+    let selected_profile = find_profile(p_db, p_name);
     let selected_profile_ref = Rc::new(RefCell::new(selected_profile));
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
@@ -45,29 +44,12 @@ pub fn editor_screen(
 }
 
 /// Searches a database for a profile given it's name. If it exists, the function
-/// will return it's details. If not, it will create one inside of the database
-/// and return a new [Profile] from this function.
-fn find_or_make_profile(
-    p_db: Rc<RefCell<Database<Profile>>>,
-    search_name: &str,
-) -> Result<Profile, error::QueryError> {
-    let mut p_db_mut = p_db.borrow_mut();
-
-    match p_db_mut.query_item(|q: &Profile| &q.name, String::from(search_name)) {
-        Ok(profile) => Ok(profile.clone()),
-        Err(error::QueryError::ItemNotFound) => {
-            let new_profile = Profile {
-                name: String::from(search_name),
-                theme: PathBuf::from("data/themes/dark-mode.toml"),
-            };
-
-            p_db_mut.add_item(new_profile.clone()).unwrap();
-            p_db_mut.dump_db().unwrap();
-
-            Ok(new_profile)
-        }
-        Err(e) => Err(e),
-    }
+/// will return it's details. If not, a panic will be raised.
+fn find_profile(p_db: Rc<RefCell<Database<Profile>>>, search_name: &str) -> Profile {
+    p_db.borrow()
+        .query_item(|q: &Profile| &q.name, String::from(search_name))
+        .unwrap()
+        .clone()
 }
 
 /// A "smart" text area that initializes depending on [StartMeta.open_path] (will
