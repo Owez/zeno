@@ -1,5 +1,3 @@
-//! # About
-//!
 //! Contains utility functions for reading contents of files and an interactive
 //! cursive prompt to open a new file inside of Zeno, instead of using the usual
 //! CLI.

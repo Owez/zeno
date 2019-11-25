@@ -1,3 +1,6 @@
+//! Shared functions for backend of Zeno. See the common [find_profile] as an
+//! example of this.
+
 use crate::profile::Profile;
 use std::cell::RefCell;
 use std::rc::Rc;

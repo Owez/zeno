@@ -1,3 +1,7 @@
+//! The Zeno code editor.
+//! 
+//! - [Repository *(contains docs)*](https://gitlab.com/zeno-src)
+
 use cursive::Cursive;
 use std::env;
 use std::path::PathBuf;

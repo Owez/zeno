@@ -1,7 +1,4 @@
-//! # About
-//!
-//! Primary editor screen showing the TextArea/[Upgrade]
-//! (https://gitlab.com/zeno-src/zeno/issues/3).
+//! Primary editor screen showing the TextArea/[Upgrade](https://gitlab.com/zeno-src/zeno/issues/3).
 
 use crate::editor::open::{get_path_content, open_path_str};
 use crate::editor::save::save_as;

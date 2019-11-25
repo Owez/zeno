@@ -1,5 +1,3 @@
-//! # About
-//!
 //! Basic profile management for the user, gives a popup for frontend CRD (create,
 //! read, delete) operations on a profile.
 //!
@@ -27,7 +25,6 @@ pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
 
     let mut profile_list = {
         let p_db_closure = Rc::clone(&p_db);
-
         SelectView::<String>::new().on_submit(move |s, selected_item| {
             editor_screen(s, Rc::clone(&p_db_closure), selected_item, &meta);
         })
@@ -42,7 +39,6 @@ pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
         }))
         .child(Button::new("Remove", {
             let p_db_closure = Rc::clone(&p_db);
-
             move |s| remove_conf(s, Rc::clone(&p_db_closure))
         }));
 

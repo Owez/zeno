@@ -1,5 +1,3 @@
-//! # About
-//!
 //! Save/dump utility for editor. Gives a prompt to save to a new file name
 //! (hence [save_as] being called this way) and proceeds to dump the file.
 

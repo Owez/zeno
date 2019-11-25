@@ -1,5 +1,3 @@
-//! # About
-//!
 //! Profile options popup/tree to allow a given user to edit their profile on the
 //! fly. See the main [profile_options] function for more information.
 

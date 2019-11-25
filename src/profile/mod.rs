@@ -1,5 +1,3 @@
-//! # About
-//!
 //! Contains items related to profiles & profile management. Please see [Profile]
 //! for library-level profile management and [options]/[select] for cursive-based
 //! popups related to profile management.
