@@ -17,7 +17,7 @@ use tinydb::Database;
 /// Profile selector for multi-user/multi-purpose editing (allowing for more
 /// flexible options).
 pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
-    let db_path = PathBuf::from("data/db/profile.db"); // path to open database
+    let db_path = PathBuf::from("data/profile.tinydb"); // path to open database
 
     let p_db = Rc::new(RefCell::new(match db_path.exists() {
         true => Database::from(db_path).unwrap(),
