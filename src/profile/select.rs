@@ -1,21 +1,32 @@
 //! # About
-//! 
+//!
 //! Basic profile management for the user, gives a popup for frontend CRD (create,
 //! read, delete) operations on a profile.
-//! 
+//!
 //! If you'd like profile *editing* options, please see [crate::profile::options].
 
 use crate::editor::screen::editor_screen;
 use crate::StartMeta;
 use cursive::views::{Button, Dialog, EditView, LinearLayout, SelectView};
 use cursive::{traits::*, Cursive};
+use std::cell::RefCell;
+use std::path::PathBuf;
+use std::rc::Rc;
+use tinydb::Database;
 
 /// Profile selector for multi-user/multi-purpose editing (allowing for more
 /// flexible options).
 pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
+    let db_path = PathBuf::from("data/db/profile.db");
+
+    let p_db = Rc::new(RefCell::new(match db_path.exists() {
+        true => Database::from(db_path).unwrap(),
+        false => Database::new(String::from("profile"), Some(db_path), true),
+    }));
+
     let profile_list = SelectView::<String>::new()
         .on_submit(move |s, selected_item| {
-            editor_screen(s, selected_item, &meta);
+            editor_screen(s, Rc::clone(&p_db), selected_item, &meta);
         })
         .with_id("p_list")
         .fixed_size((32, 8));

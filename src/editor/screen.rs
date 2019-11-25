@@ -15,17 +15,15 @@ use std::rc::Rc;
 use tinydb::{error, Database};
 
 /// Shows the main editor screen.
-pub fn editor_screen(s: &mut Cursive, p_name: &str, meta: &StartMeta) {
+pub fn editor_screen(
+    s: &mut Cursive,
+    p_db: Rc<RefCell<Database<Profile>>>,
+    p_name: &str,
+    meta: &StartMeta,
+) {
     s.pop_layer();
 
-    let db_path = PathBuf::from("data/db/profile.db");
-
-    let mut p_db: Database<Profile> = match db_path.exists() {
-        true => Database::from(db_path).unwrap(),
-        false => Database::new(String::from("profile"), Some(db_path), true),
-    };
-
-    let selected_profile = find_or_make_profile(&mut p_db, p_name).unwrap();
+    let selected_profile = find_or_make_profile(p_db, p_name).unwrap();
     let selected_profile_ref = Rc::new(RefCell::new(selected_profile));
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
@@ -50,10 +48,12 @@ pub fn editor_screen(s: &mut Cursive, p_name: &str, meta: &StartMeta) {
 /// will return it's details. If not, it will create one inside of the database
 /// and return a new [Profile] from this function.
 fn find_or_make_profile(
-    p_db: &mut Database<Profile>,
+    p_db: Rc<RefCell<Database<Profile>>>,
     search_name: &str,
 ) -> Result<Profile, error::QueryError> {
-    match p_db.query_item(|q: &Profile| &q.name, String::from(search_name)) {
+    let mut p_db_mut = p_db.borrow_mut();
+
+    match p_db_mut.query_item(|q: &Profile| &q.name, String::from(search_name)) {
         Ok(profile) => Ok(profile.clone()),
         Err(error::QueryError::ItemNotFound) => {
             let new_profile = Profile {
@@ -61,8 +61,8 @@ fn find_or_make_profile(
                 theme: PathBuf::from("data/themes/dark-mode.toml"),
             };
 
-            p_db.add_item(new_profile.clone()).unwrap();
-            p_db.dump_db().unwrap();
+            p_db_mut.add_item(new_profile.clone()).unwrap();
+            p_db_mut.dump_db().unwrap();
 
             Ok(new_profile)
         }

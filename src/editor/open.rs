@@ -25,7 +25,7 @@ pub fn open_path_str(s: &mut Cursive) {
                     Err(e) => {
                         s.add_layer(Dialog::info(e));
                         return ();
-                    },
+                    }
                 }; // Use [got_path] to get file contents or exit if fail
 
                 s.call_on_id("tb", |view: &mut TextArea| view.set_content(contents))

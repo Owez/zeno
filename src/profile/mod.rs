@@ -1,5 +1,5 @@
 //! # About
-//! 
+//!
 //! Contains items related to profiles & profile management. Please see [Profile]
 //! for library-level profile management and [options]/[select] for cursive-based
 //! popups related to profile management.
@@ -7,7 +7,7 @@
 pub mod options;
 pub mod select;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 /// Storage structure for holding metadata for a given profile in-memory.
