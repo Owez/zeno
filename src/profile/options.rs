@@ -6,12 +6,20 @@ use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
 use std::cell::RefCell;
 use std::rc::Rc;
+use crate::theme::get_themes;
+use std::path::PathBuf;
 
 /// Allows users to edit their profile options.
 pub fn profile_options(s: &mut Cursive, profile: Rc<RefCell<Profile>>) {
     let profile_theme_options = move |s: &mut Cursive| {
-        // profile.borrow_mut().name = String::from("Woo"); // TODO do this with theme
-        s.add_layer(Dialog::info(format!("It works, {}", profile.borrow().name)));
+        let mut theme_select = SelectView::<PathBuf>::new();
+
+        for theme in get_themes().unwrap().iter() {
+            theme_select.add_item(theme.nickname.clone(), theme.path.clone());
+        }
+
+        // s.add_layer(Dialog::info(format!("It works, {}", profile.borrow().name)));
+        s.add_layer(Dialog::around(theme_select))
     };
 
     let options = SelectView::new()

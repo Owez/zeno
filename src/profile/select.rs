@@ -5,7 +5,7 @@
 
 use crate::editor::screen::editor_screen;
 use crate::profile::Profile;
-use crate::{utils, StartMeta};
+use crate::StartMeta;
 use cursive::views::{Button, Dialog, EditView, LinearLayout, SelectView};
 use cursive::{traits::*, Cursive};
 use std::cell::RefCell;
@@ -83,10 +83,9 @@ fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
         None => s.add_layer(Dialog::info("No profiles to remove!")),
         Some(profile) => {
             // remove from db
-        
             // let cloned = p_db.borrow();
             let mut p_db_mut = p_db.borrow_mut();
-            let (to_find, _) = got_select.get_item(profile).unwrap();
+            // let (to_find, _) = got_select.get_item(profile).unwrap();
 
             // let got_profile = match cloned.query_item(|q| &q.name, String::from(to_find)) {
             //     Ok(x) => Some(x),
@@ -96,7 +95,10 @@ fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
             //         None
             //     }
             // };
-            let got_profile = Some(Profile { name: String::from("dfsf"), theme: PathBuf::from("data/themes/dark-theme.toml") });
+            let got_profile = Some(Profile {
+                name: String::from("dfsf"),
+                theme: PathBuf::from("data/themes/dark-theme.toml"),
+            });
 
             if got_profile.is_some() {
                 match p_db_mut.remove_item(&got_profile.unwrap()) {
@@ -104,8 +106,8 @@ fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
                         s.add_layer(Dialog::info("Removed profile!"));
                         p_db_mut.dump_db().unwrap();
                         got_select.remove_item(profile);
-                    },
-                    Err(_) => s.add_layer(Dialog::info("Error: could not remove profile!"))
+                    }
+                    Err(_) => s.add_layer(Dialog::info("Error: could not remove profile!")),
                 };
             }
         }
