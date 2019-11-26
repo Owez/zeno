@@ -83,15 +83,31 @@ fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
         None => s.add_layer(Dialog::info("No profiles to remove!")),
         Some(profile) => {
             // remove from db
+        
+            // let cloned = p_db.borrow();
             let mut p_db_mut = p_db.borrow_mut();
-            let (_, to_find) = got_select.get_item(profile).unwrap();
+            let (to_find, _) = got_select.get_item(profile).unwrap();
 
-            let found_profile = utils::find_profile(Rc::clone(&p_db), to_find); // Broken
-            p_db_mut.remove_item(&found_profile).unwrap();
-            p_db_mut.dump_db().unwrap();
+            // let got_profile = match cloned.query_item(|q| &q.name, String::from(to_find)) {
+            //     Ok(x) => Some(x),
+            //     Err(_) => {
+            //         Dialog::info(format!("Could not find profile {}!", to_find));
 
-            // remove from list
-            got_select.remove_item(profile);
+            //         None
+            //     }
+            // };
+            let got_profile = Some(Profile { name: String::from("dfsf"), theme: PathBuf::from("data/themes/dark-theme.toml") });
+
+            if got_profile.is_some() {
+                match p_db_mut.remove_item(&got_profile.unwrap()) {
+                    Ok(()) => {
+                        s.add_layer(Dialog::info("Removed profile!"));
+                        p_db_mut.dump_db().unwrap();
+                        got_select.remove_item(profile);
+                    },
+                    Err(_) => s.add_layer(Dialog::info("Error: could not remove profile!"))
+                };
+            }
         }
     }
 }
