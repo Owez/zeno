@@ -3,7 +3,7 @@
 
 use crate::profile::Profile;
 use std::cell::RefCell;
-use std::env::current_dir;
+use std::env::current_exe;
 use std::io;
 use std::path::PathBuf;
 use std::rc::Rc;
@@ -20,7 +20,8 @@ pub fn find_profile(p_db: Rc<RefCell<Database<Profile>>>, search_name: &str) -> 
 
 /// Prefixes the given path with the currently executing directory
 pub fn dir_append(path: PathBuf) -> Result<PathBuf, io::Error> {
-    let mut cur_dir = current_dir()?;
+    let mut cur_dir = current_exe()?;
+    cur_dir.pop(); // remove exe file
     cur_dir.push(path);
 
     Ok(cur_dir)
