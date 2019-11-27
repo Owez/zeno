@@ -1,5 +1,5 @@
 //! The Zeno code editor.
-//! 
+//!
 //! - [Repository *(contains docs)*](https://gitlab.com/zeno-src)
 
 use cursive::Cursive;
@@ -76,7 +76,8 @@ fn main() {
 
     let mut siv = Cursive::default();
 
-    siv.load_theme_file("data/themes/dark-mode.toml").unwrap(); // Dark default theme
+    siv.load_theme_file(utils::dir_append(PathBuf::from("data/themes/dark-mode.toml")).unwrap())
+        .unwrap(); // Dark default theme
 
     siv.add_global_callback('e', |s| s.quit());
     zeno_launch(&mut siv, args);

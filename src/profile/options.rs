@@ -2,15 +2,15 @@
 //! fly. See the main [profile_options] function for more information.
 
 use crate::profile::Profile;
+use crate::theme::get_themes;
 use cursive::views::{Dialog, SelectView};
 use cursive::Cursive;
 use std::cell::RefCell;
-use std::rc::Rc;
-use crate::theme::get_themes;
 use std::path::PathBuf;
+use std::rc::Rc;
 
 /// Allows users to edit their profile options.
-pub fn profile_options(s: &mut Cursive, profile: Rc<RefCell<Profile>>) {
+pub fn profile_options(s: &mut Cursive, _profile: Rc<RefCell<Profile>>) {
     let profile_theme_options = move |s: &mut Cursive| {
         let mut theme_select = SelectView::<PathBuf>::new();
 

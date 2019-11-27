@@ -5,7 +5,7 @@
 
 use crate::editor::screen::editor_screen;
 use crate::profile::Profile;
-use crate::StartMeta;
+use crate::{utils, StartMeta};
 use cursive::views::{Button, Dialog, EditView, LinearLayout, SelectView};
 use cursive::{traits::*, Cursive};
 use std::cell::RefCell;
@@ -16,7 +16,7 @@ use tinydb::Database;
 /// Profile selector for multi-user/multi-purpose editing (allowing for more
 /// flexible options).
 pub fn profile_select(s: &mut Cursive, meta: StartMeta) {
-    let db_path = PathBuf::from("data/profile.tinydb"); // path to open database
+    let db_path = utils::dir_append(PathBuf::from("data/profile.tinydb")).unwrap(); // path to open database
 
     let p_db = Rc::new(RefCell::new(match db_path.exists() {
         true => Database::from(db_path).unwrap(),

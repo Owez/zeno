@@ -3,6 +3,9 @@
 
 use crate::profile::Profile;
 use std::cell::RefCell;
+use std::env::current_dir;
+use std::io;
+use std::path::PathBuf;
 use std::rc::Rc;
 use tinydb::Database;
 
@@ -13,4 +16,12 @@ pub fn find_profile(p_db: Rc<RefCell<Database<Profile>>>, search_name: &str) -> 
         .query_item(|q: &Profile| &q.name, String::from(search_name))
         .unwrap()
         .clone()
+}
+
+/// Prefixes the given path with the currently executing directory
+pub fn dir_append(path: PathBuf) -> Result<PathBuf, io::Error> {
+    let mut cur_dir = current_dir()?;
+    cur_dir.push(path);
+
+    Ok(cur_dir)
 }
