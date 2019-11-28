@@ -19,15 +19,18 @@ pub fn editor_screen(
 ) {
     s.pop_layer();
 
+    let p_db_closure = Rc::clone(&p_db);
+
     let selected_profile = utils::find_profile(p_db, p_name);
     let selected_profile_ref = Rc::new(RefCell::new(selected_profile));
+
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
         OnEventView::new(smart_text_area(meta).with_id("tb"))
             .on_pre_event(event::Event::CtrlChar('s'), save_as)
             .on_pre_event(event::Event::CtrlChar('o'), open_path_str)
             .on_pre_event(event::Event::CtrlChar('l'), move |s| {
-                profile_options(s, Rc::clone(&selected_profile_ref));
+                profile_options(s, Rc::clone(&selected_profile_ref), Rc::clone(&p_db_closure));
             }),
     ));
     let save_info =
