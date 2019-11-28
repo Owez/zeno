@@ -8,7 +8,7 @@ cargo build --release
 cd ..
 mkdir zeno/
 mv ./zeno-build/target/release/zeno ./zeno/
-cp -r ./zeno-build/data/ ./zeno/
+mv ./zeno-build/target/release/data ./zeno/
 rm -rf zeno-build/
 cd zeno/
 strip ./zeno
@@ -16,4 +16,4 @@ chmod +x ./zeno
 
 echo "zeno='.$PWD/zeno'" >> ~/.bash_aliases && source ~/.bash_aliases
 
-echo "Installed @ './zeno/*'!"
+echo "Installed @ './zeno/*' and in '~/.bash_alias'!"
