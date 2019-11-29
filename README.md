@@ -13,7 +13,7 @@ This repository is still under heavy development and is currently not anywhere n
 - Master git branch:
 
   ```bash
-  curl --proto '=https' --tlsv1.2 -sSf https://gitlab.com/zeno-src/zeno/blob/profile-themes-remove/scripts/install_linux.sh | sh
+  wget https://gitlab.com/zeno-src/zeno/raw/master/scripts/install_linux.sh && sh -e ./install_linux.sh
   ```
 
 - [Recent Linux x86 binaries](https://gitlab.com/zeno-src/zeno/pipelines?scope=branches&page=1/)
