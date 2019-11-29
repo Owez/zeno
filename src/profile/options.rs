@@ -3,7 +3,7 @@
 
 use crate::profile::Profile;
 use crate::theme::{get_themes, Theme};
-use cursive::views::{BoxView, Dialog, SelectView, ScrollView};
+use cursive::views::{BoxView, Dialog, ScrollView, SelectView};
 use cursive::Cursive;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -60,7 +60,7 @@ pub fn profile_options(
     );
 }
 
-/// Loads a theme into user and saves it to db
+/// Loads a theme into user and saves it to the [p_db]
 fn load_theme(
     s: &mut Cursive,
     got_theme: &Theme,
