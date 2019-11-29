@@ -3,7 +3,7 @@
 
 use crate::profile::Profile;
 use crate::theme::{get_themes, Theme};
-use cursive::views::{Dialog, SelectView};
+use cursive::views::{BoxView, Dialog, SelectView, ScrollView};
 use cursive::Cursive;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -34,7 +34,13 @@ pub fn profile_options(
                 theme_select.add_item(theme.nickname.clone(), cloned_theme);
             }
 
-            s.add_layer(Dialog::around(theme_select).title("Theme select"));
+            s.add_layer(
+                Dialog::around(BoxView::with_fixed_width(32, ScrollView::new(theme_select)))
+                    .title("Theme select")
+                    .button("Cancel", |s| {
+                        s.pop_layer();
+                    }),
+            );
         }
     };
 
