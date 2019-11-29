@@ -6,7 +6,7 @@ use std::fs;
 use std::path::PathBuf;
 
 /// Simple theme structure for storing an individual theme
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Theme {
     pub path: PathBuf,
     pub nickname: String,
