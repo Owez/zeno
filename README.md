@@ -18,7 +18,7 @@ Zeno is a new code editor with ease-of-use in mind.
 
 ### Windows & OSX
 
-Windows & OSX is not officially supported but *should* work as [crossterm]() is cross-platform (the backend used for creating the terminal/text interface). Therefore to run it on windows, you need to manually build Zeno.
+Windows & OSX is not officially supported but *should* work as [crossterm](https://lib.rs/crates/crossterm) is cross-platform (the backend used for creating the terminal/text interface). Therefore to run it on windows, you need to manually build Zeno.
 
 Please install [Rust](https://www.rust-lang.org/tools/install) & [git](https://git-scm.com/download/win) then follow the steps below:
 

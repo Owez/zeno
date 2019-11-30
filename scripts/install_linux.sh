@@ -8,7 +8,7 @@ cargo build --release
 cd ..
 mkdir zeno/
 mv ./zeno-build/target/release/zeno ./zeno/
-mv ./zeno-build/target/release/data ./zeno/
+mv ./zeno-build/data ./zeno/
 rm -rf zeno-build/
 cd zeno/
 strip ./zeno
