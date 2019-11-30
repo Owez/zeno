@@ -3,7 +3,8 @@
 use crate::editor::open::{get_path_content, open_path_str};
 use crate::editor::save::save_as;
 use crate::profile::{options::profile_options, Profile};
-use crate::{StartMeta, utils};
+use crate::theme::push_toml_theme;
+use crate::{utils, StartMeta};
 use cursive::views::{BoxView, LinearLayout, OnEventView, ScrollView, TextArea, TextView};
 use cursive::{event, traits::*, Cursive};
 use std::cell::RefCell;
@@ -22,15 +23,18 @@ pub fn editor_screen(
     let p_db_closure = Rc::clone(&p_db);
 
     let selected_profile = utils::find_profile(p_db, p_name);
-    let selected_profile_ref = Rc::new(RefCell::new(selected_profile));
-
+    let selected_profile_ref = Rc::new(RefCell::new(selected_profile.clone()));
 
     let text_enclosure = ScrollView::new(BoxView::with_full_screen(
         OnEventView::new(smart_text_area(meta).with_id("tb"))
             .on_pre_event(event::Event::CtrlChar('s'), save_as)
             .on_pre_event(event::Event::CtrlChar('o'), open_path_str)
             .on_pre_event(event::Event::CtrlChar('l'), move |s| {
-                profile_options(s, Rc::clone(&selected_profile_ref), Rc::clone(&p_db_closure));
+                profile_options(
+                    s,
+                    Rc::clone(&selected_profile_ref),
+                    Rc::clone(&p_db_closure),
+                );
             }),
     ));
     let save_info =
@@ -41,6 +45,8 @@ pub fn editor_screen(
             .child(text_enclosure)
             .child(save_info),
     );
+
+    push_toml_theme(s, selected_profile.clone().theme, false); // Load theme (don't message on success)
 }
 
 /// A "smart" text area that initializes depending on [StartMeta.open_path] (will

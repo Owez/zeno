@@ -97,8 +97,8 @@ fn remove_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
             // };
             let got_profile = Some(Profile {
                 name: String::from("dfsf"),
-                theme: PathBuf::from("data/themes/dark-theme.toml"),
-            });
+                theme: PathBuf::from("data/themes/dark-mode.toml"),
+            }); // TODO get remove working
 
             if got_profile.is_some() {
                 match p_db_mut.remove_item(&got_profile.unwrap()) {
@@ -129,7 +129,7 @@ fn add_profile(s: &mut Cursive, p_db: Rc<RefCell<Database<Profile>>>) {
                 p_db_mut
                     .add_item(Profile {
                         name: p_name.to_string(),
-                        theme: PathBuf::from("data/themes/dark-theme.toml"),
+                        theme: PathBuf::from("data/themes/dark-mode.toml"), // default theme
                     })
                     .unwrap();
                 p_db_mut.dump_db().unwrap();

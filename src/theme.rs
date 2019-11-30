@@ -53,7 +53,8 @@ pub fn load_theme(
     ) {
         Ok(_) => {
             profile_mut.update_theme(&got_theme); // update profile
-            push_toml_theme(s, got_theme.path.clone());
+            p_db_mut.dump_db().unwrap();
+            push_toml_theme(s, got_theme.path.clone(), true); // update cursive, use success message
         }
         Err(e) => s.add_layer(Dialog::info(format!(
             "Could not update theme! Error: '{:?}'",
@@ -63,8 +64,12 @@ pub fn load_theme(
 }
 
 /// Loads toml file and pushes it to cursive. Please see [load_theme] (that uses
-/// this function) if you'd like to push to database
-fn push_toml_theme(s: &mut Cursive, path: PathBuf) {
+/// this function) if you'd like to push to database.
+///
+/// `should_msg` means if it should message on sucess. This can be used as a startup
+/// task so the user shouldn't be notified for an automatic duty success. This
+/// will always message on faliure.
+pub fn push_toml_theme(s: &mut Cursive, path: PathBuf, should_msg: bool) {
     let open_file = |p: PathBuf| -> Result<String, std::io::Error> {
         let mut file = File::open(p)?;
         let mut contents = String::new();
@@ -73,18 +78,24 @@ fn push_toml_theme(s: &mut Cursive, path: PathBuf) {
         Ok(contents)
     };
 
-    match open_file(path) {
+    match open_file(path.clone()) {
         Ok(c) => {
             match s.load_toml(&c) {
-                Ok(_) => s.add_layer(Dialog::info("Loaded theme successfully!")),
-                Err(_) => s.add_layer(Dialog::info(
-                    "Failed to load theme, make sure it's a valid theme file!",
-                )),
+                Ok(_) => {
+                    if should_msg {
+                        s.add_layer(Dialog::info("Loaded theme successfully!"))
+                    }
+                }
+                Err(e) => s.add_layer(Dialog::info(format!(
+                    "Failed to load theme, make sure it's a valid theme file!\n\nError: '{:?}'",
+                    e
+                ))),
             };
         }
-        Err(_) => s.add_layer(Dialog::info(
-            "Could not load theme file, make sure it exists!",
-        )),
+        Err(_) => s.add_layer(Dialog::info(format!(
+            "Could not load theme file, make sure {:?} exists!",
+            path
+        ))),
     };
 }
 
