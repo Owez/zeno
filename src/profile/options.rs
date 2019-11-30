@@ -2,7 +2,7 @@
 //! fly. See the main [profile_options] function for more information.
 
 use crate::profile::Profile;
-use crate::theme::{get_themes, Theme};
+use crate::theme::{get_themes, load_theme, Theme};
 use cursive::views::{BoxView, Dialog, ScrollView, SelectView};
 use cursive::Cursive;
 use std::cell::RefCell;
@@ -58,18 +58,4 @@ pub fn profile_options(
             })
             .title("Profile settings"),
     );
-}
-
-/// Loads a theme into user and saves it to the [p_db]
-fn load_theme(
-    s: &mut Cursive,
-    got_theme: &Theme,
-    profile: Rc<RefCell<Profile>>,
-    _p_db: Rc<RefCell<Database<Profile>>>,
-) {
-    s.add_layer(Dialog::info(format!(
-        "Hello there, {}.\n\n{:#?}",
-        profile.borrow().name,
-        got_theme
-    ))); // Test debug
 }

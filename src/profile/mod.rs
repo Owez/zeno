@@ -5,6 +5,7 @@
 pub mod options;
 pub mod select;
 
+use crate::theme::Theme;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -16,4 +17,10 @@ pub struct Profile {
 
     /// Path to the theme file. This should be a valid theme toml or it will throw an error.
     pub theme: PathBuf,
+}
+
+impl Profile {
+    pub fn update_theme(&mut self, theme: &Theme) {
+        self.theme = theme.path.clone();
+    }
 }
